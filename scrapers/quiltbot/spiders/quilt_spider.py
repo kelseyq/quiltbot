@@ -1,5 +1,4 @@
 import scrapy
-import random
 
 from quiltbot.items import QuiltItem
 
