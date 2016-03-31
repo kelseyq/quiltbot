@@ -13,16 +13,24 @@ twitter = Twython(APP_KEY, APP_SECRET, TOKEN, TOKEN_SECRET)
 def split_names(names, last_tweet=None):
     while len(names) > 0:
         next_tweet = ""
+
+        #link tweets
+        if names[0].get('link') and last_tweet is not None:
+            next_name = names.pop(0)
+            status = next_name['name'] + "\n" + next_name['link']
+            last_tweet = twitter.update_status(status=status,
+                                                in_reply_to_status_id=last_tweet['id_str'])
         while len(next_tweet) < 140:
-            if len(names) == 0 or len(next_tweet) + 2 + len(names[0]) + 1 > 140:
+            if len(names) == 0 \
+                    or names[0].get('link') \
+                    or len(next_tweet) + 2 + len(names[0]['name']) > 140:
                 break
             if len(next_tweet) > 0:
-                next_tweet = next_tweet + " "
-            next_tweet = next_tweet + names.pop(0)
-            if len(names) > 0:
-                next_tweet = next_tweet + ";"
+                next_tweet = next_tweet + "; "
+            next_tweet = next_tweet + names.pop(0)['name']
         assert len(next_tweet) <= 140
-        if last_tweet is not None:
+
+        if last_tweet is not None and len(next_tweet) > 0:
             last_tweet = twitter.update_status(status=next_tweet,
                                                 in_reply_to_status_id=last_tweet['id_str'])
 
@@ -32,7 +40,7 @@ def main():
         if len(sys.argv) > 1:
             block_number = sys.argv[1].zfill(5)
         else:
-            block_number = '%05d' % random.randint(1, 5929)
+            block_number = '%05d' % random.randint(1, len(items))
         block_data = next((item for item in items if item['block_number'] == block_number))
         block_image = open(PICTURE_DIR + block_number + '.jpg', 'rb')
         names = block_data['names']
