@@ -41,17 +41,19 @@ def main():
         twitter = Twython(APP_KEY, APP_SECRET, TOKEN, TOKEN_SECRET)
 
         if len(sys.argv) > 1:
-            block_number = sys.argv[1].zfill(5)
+            block_numbers = [number.zfill(5) for number in sys.argv[1:]]
         else:
-            block_number = '%05d' % random.randint(1, len(items))
-        block_data = next((item for item in items if item['block_number'] == block_number))
-        block_image = open(PICTURE_DIR + block_number + '.jpg', 'rb')
-        names = block_data['names']
+            block_numbers = ['%05d' % random.randint(1, len(items))]
 
-        response = twitter.upload_media(media=block_image)
-        last_tweet = twitter.update_status(status="", media_ids=[response['media_id']])
+        for block_number in block_numbers:
+            block_data = next((item for item in items if item['block_number'] == block_number))
+            block_image = open(PICTURE_DIR + block_number + '.jpg', 'rb')
+            names = block_data['names']
 
-        split_names(names, twitter, last_tweet)
+            response = twitter.upload_media(media=block_image)
+            last_tweet = twitter.update_status(status="", media_ids=[response['media_id']])
+
+            split_names(names, twitter, last_tweet)
 
 if __name__ == "__main__":
     main()
