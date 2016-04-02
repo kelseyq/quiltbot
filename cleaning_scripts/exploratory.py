@@ -21,8 +21,23 @@ with open('../cleaned_quiltdata/items.json', 'r') as f:
 #special characters
 with open('../cleaned_quiltdata/items.json', 'r') as f:
     items = json.load(f)
+    i = 0
     for item in items:
         for name in item['names']:
             if re.search(r'[\x80-\xFF]', name['name']):
-                print(item['block_number'] + ": " + name)
+                #print(item['block_number'] + ": " + name)
+                i = i + 1
+    print(str(i) + (" names with special characters"))
 
+#has "and"
+#run with 'and' and '&'
+with open('../cleaned_quiltdata/items.json', 'r') as f:
+    items = json.load(f)
+    i = 0
+    for item in items:
+        for name in item['names']:
+            pair = re.search(r'(.+) & (.+)', name['name'])
+            if pair:
+                i = i + 1
+                #print(item['block_number'] + ": " + name['name'])
+    print(str(i) + " names with 'and'")
