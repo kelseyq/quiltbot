@@ -8,17 +8,18 @@ APP_SECRET = ''
 TOKEN = ""
 TOKEN_SECRET = ""
 PICTURE_DIR = "../cleaned_quiltdata/quilt_images2/full/"
-twitter = Twython(APP_KEY, APP_SECRET, TOKEN, TOKEN_SECRET)
 
-def split_names(names, last_tweet=None):
+
+def split_names(names, twitter=None, last_tweet=None):
     while len(names) > 0:
         next_tweet = ""
 
         #link tweets
-        if names[0].get('link') and last_tweet is not None:
+        if names[0].get('link'):
             next_name = names.pop(0)
             status = next_name['name'] + "\n" + next_name['link']
-            last_tweet = twitter.update_status(status=status,
+            if twitter is not None:
+                last_tweet = twitter.update_status(status=status,
                                                 in_reply_to_status_id=last_tweet['id_str'])
         while len(next_tweet) < 140:
             if len(names) == 0 \
@@ -30,13 +31,15 @@ def split_names(names, last_tweet=None):
             next_tweet = next_tweet + names.pop(0)['name']
         assert len(next_tweet) <= 140
 
-        if last_tweet is not None and len(next_tweet) > 0:
+        if twitter is not None and len(next_tweet) > 0:
             last_tweet = twitter.update_status(status=next_tweet,
                                                 in_reply_to_status_id=last_tweet['id_str'])
 
 def main():
     with open('../cleaned_quiltdata/items.json', 'r') as f:
         items = json.load(f)
+        twitter = Twython(APP_KEY, APP_SECRET, TOKEN, TOKEN_SECRET)
+
         if len(sys.argv) > 1:
             block_number = sys.argv[1].zfill(5)
         else:
@@ -48,7 +51,7 @@ def main():
         response = twitter.upload_media(media=block_image)
         last_tweet = twitter.update_status(status="", media_ids=[response['media_id']])
 
-        split_names(names, last_tweet)
+        split_names(names, twitter, last_tweet)
 
 if __name__ == "__main__":
     main()
