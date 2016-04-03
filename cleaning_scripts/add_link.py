@@ -29,8 +29,9 @@ def main():
             (block_number, target_name) = blockname.split(":",1)
             block_data = next((item for item in items if item['block_number'] == block_number.zfill(5)))
             name = next((name for name in block_data['names'] if name['name'] == target_name))
-            name['link'] = link
-            print(name)
+            if not name.get('link'):
+                print("adding link to block", block_number)
+                name['link'] = link
 
         copyfile('../cleaned_quiltdata/items.json', '../cleaned_quiltdata/older_data/before_add_link' +
                  str(datetime.datetime.now()).split('.')[0] + ".json")
