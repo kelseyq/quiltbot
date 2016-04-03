@@ -43,13 +43,18 @@ def main():
         if len(sys.argv) > 1:
             block_numbers = [number.zfill(5) for number in sys.argv[1:]]
         else:
-            block_numbers = ['%05d' % random.randint(1, len(items))]
+            std_in = sys.stdin.readline().split()
+            if len(std_in) > 1:
+                block_numbers = [number.zfill(5) for number in std_in]
+            else:
+                block_numbers = ['%05d' % random.randint(1, len(items))]
 
         for block_number in block_numbers:
             block_data = next((item for item in items if item['block_number'] == block_number))
             block_image = open(PICTURE_DIR + block_number + '.jpg', 'rb')
             names = block_data['names']
 
+            print("tweeting block", block_number)
             response = twitter.upload_media(media=block_image)
             last_tweet = twitter.update_status(status="", media_ids=[response['media_id']])
 
