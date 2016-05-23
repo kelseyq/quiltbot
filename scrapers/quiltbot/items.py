@@ -7,12 +7,20 @@
 
 import scrapy
 
+
 class QuiltItem(scrapy.Item):
     block_number = scrapy.Field()
     names = scrapy.Field()
     image_urls = scrapy.Field()
 
+
 class BARObitItem(scrapy.Item):
     full_name = scrapy.Field()
+    link = scrapy.Field()
+    date = scrapy.Field()
+
+
+class TOPObitItem(scrapy.Item):
+    full_name_raw = scrapy.Field()
     link = scrapy.Field()
     date = scrapy.Field()
