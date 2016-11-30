@@ -86,3 +86,5 @@ ENV/
 
 # PyCharm
 .idea
+
+cleaned_quiltdata/

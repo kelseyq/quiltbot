@@ -21,6 +21,7 @@ class BARObitItem(scrapy.Item):
 
 
 class TOPObitItem(scrapy.Item):
-    full_name_raw = scrapy.Field()
+    full_name = scrapy.Field()
+    title_name = scrapy.Field()
     link = scrapy.Field()
     date = scrapy.Field()

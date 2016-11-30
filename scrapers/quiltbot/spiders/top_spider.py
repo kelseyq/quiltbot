@@ -17,20 +17,29 @@ class TOPSpider(scrapy.Spider):
         return self.get_obits(response)
 
     def get_obits(self, response):
-        for link in response.xpath("//table/tr/td/div/font/a"):
-            url = link.xpath('@href').extract()[0]
-            link_text = "".join(link.xpath('text()').extract())
-            link_text_elements = link_text.split("-", 1)
-            if len(link_text_elements) == 2:
-                item = TOPObitItem()
-                item['link'] = url
-                item['full_name_raw'] = link_text_elements[1].strip()
-                item['date'] = link_text_elements[0].strip()
-                yield item
-            else:
-                print(link, link_text)
+        for link in response.xpath("//table/tr/td/div/font/a/@href"):
+            url = response.urljoin(link.extract())
+            yield scrapy.Request(url, callback=self.process_obit)
 
         next_page = response.xpath("//a[contains(., 'Next')]/@href")
         if next_page:
             url = response.urljoin(next_page[0].extract())
             yield scrapy.Request(url, self.get_obits)
+
+    def process_obit(self, response):
+        title = response.xpath('//title/text()').extract()[0]
+        title_elements = title.split("-", 1)
+        if len(title_elements) == 2:
+            item = TOPObitItem()
+            full_name = ""
+            try:
+                full_name = " ".join(response.xpath('//table//tr/td/div/p[3]/*/*/text()').extract()[0].split())
+            except:
+                pass
+            item['full_name'] = full_name
+            item['link'] = response.url
+            item['title_name'] = title_elements[1].strip()
+            item['date'] = title_elements[0].strip()
+            return item
+        else:
+            print(response.url, title_elements)
