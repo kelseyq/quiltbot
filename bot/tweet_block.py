@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+
 from twython import Twython
 import random
 import json
 import sys
+import time
 
 APP_KEY = ''
 APP_SECRET = ''
@@ -19,8 +22,9 @@ def split_names(names, twitter=None, last_tweet=None):
             next_name = names.pop(0)
             status = next_name['name'] + "\n" + next_name['link']
             if twitter is not None:
-                last_tweet = twitter.update_status(status=status,
-                                                in_reply_to_status_id=last_tweet['id_str'])
+                time.sleep(5)
+                twitter.update_status(status=status, in_reply_to_status_id=last_tweet['id_str'])
+
         while len(next_tweet) < 140:
             if len(names) == 0 \
                     or names[0].get('link') \
@@ -32,8 +36,8 @@ def split_names(names, twitter=None, last_tweet=None):
         assert len(next_tweet) <= 140
 
         if twitter is not None and len(next_tweet) > 0:
-            last_tweet = twitter.update_status(status=next_tweet,
-                                                in_reply_to_status_id=last_tweet['id_str'])
+            time.sleep(5)
+            twitter.update_status(status=next_tweet, in_reply_to_status_id=last_tweet['id_str'])
 
 def main():
     with open('../cleaned_quiltdata/items.json', 'r') as f:
