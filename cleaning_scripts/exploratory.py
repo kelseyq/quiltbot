@@ -1,5 +1,6 @@
 import json
 import re
+import os
 
 #longer than 140 chars
 with open('../cleaned_quiltdata/items.json', 'r') as f:
@@ -100,3 +101,15 @@ with open('../cleaned_quiltdata/top-obit-items.json', 'r') as f:
             #print(obit['title_name'], obit['link'])
             andnames = andnames + 1
     print(str(andnames), "composite names")
+
+#list missing quilt block images
+with open('../cleaned_quiltdata/items.json', 'r') as f:
+    obits_string = f.read()
+    obits = json.loads(obits_string)
+    filenames = os.listdir('../cleaned_quiltdata/quilt_images2/full/')
+    missing_images = [obit['block_number'] for obit in obits if obit['block_number'] + ".jpg" not in filenames]
+    print(missing_images)
+    print("Number of missing images: " + str(len(missing_images)))
+    missing_blocks = [filename.split('.')[0] for filename in filenames if filename.split('.')[0] not in obits_string]
+    print(missing_blocks)
+    print("Number of missing blocks: " + str(len(missing_blocks)))
