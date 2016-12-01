@@ -11,7 +11,7 @@ APP_KEY = ''
 APP_SECRET = ''
 TOKEN = ""
 TOKEN_SECRET = ""
-PICTURE_DIR = "../cleaned_quiltdata/quilt_images2/full/"
+PICTURE_DIR = "../cleaned_quiltdata/quilt_images2/working/"
 
 
 def split_names(names, twitter=None, last_tweet=None):
