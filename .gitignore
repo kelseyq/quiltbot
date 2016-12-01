@@ -88,5 +88,6 @@ ENV/
 .idea
 
 cleaned_quiltdata/**
+!cleaned_quiltdata/items.json
 
 intermediate_data
