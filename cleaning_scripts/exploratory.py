@@ -37,7 +37,7 @@ with open('../cleaned_quiltdata/items.json', 'r') as f:
     for item in items:
         for name in item['names']:
             if re.search(r'[\x80-\xFF]', name['name']):
-                #print(name['name'])
+                print(item['block_number'] + " " + name['name'])
                 i = i + 1
     print(str(i) + (" names with special characters"))
 
@@ -55,7 +55,7 @@ with open('../cleaned_quiltdata/items.json', 'r') as f:
     print(str(i) + " names with 'and'")
 
 # #duplicate names in BAR obits
-# with open('../cleaned_quiltdata/bar-obit-items.json', 'r') as f:
+# with open('../intermediate_data/bar-obit-items.json', 'r') as f:
 #     obits = json.load(f)
 #     dupes = 0
 #     for idx, obit in enumerate(obits):
@@ -67,7 +67,7 @@ with open('../cleaned_quiltdata/items.json', 'r') as f:
 #     print(str(dupes), "duplicate obit names")
 
 # #duplicate names in TOP obits
-# with open('../cleaned_quiltdata/top-obit-items.json', 'r') as f:
+# with open('../intermediate_data/top-obit-items.json', 'r') as f:
 #     obits = json.load(f)
 #     dupes = 0
 #     for idx, obit in enumerate(obits):
@@ -79,7 +79,7 @@ with open('../cleaned_quiltdata/items.json', 'r') as f:
 #     print(str(dupes), "duplicate obit names")
 
 # names with more than 3 components in TOP obits
-with open('../cleaned_quiltdata/top-obit-items.json', 'r') as f:
+with open('../intermediate_data/top-obit-items.json', 'r') as f:
     obits = json.load(f)
     longnames = 0
     for idx, obit in enumerate(obits):
@@ -93,7 +93,7 @@ with open('../cleaned_quiltdata/top-obit-items.json', 'r') as f:
     print(str(longnames), "long names")
 
 #composite obits
-with open('../cleaned_quiltdata/top-obit-items.json', 'r') as f:
+with open('../intermediate_data/top-obit-items.json', 'r') as f:
     obits = json.load(f)
     andnames = 0
     for idx, obit in enumerate(obits):

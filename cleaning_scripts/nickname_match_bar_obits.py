@@ -12,7 +12,7 @@ def format_for_manual(obit_link, matches):
     "../bot/tweet_block.py " + " ".join([match.split(":")[0] for match in matches]))
 
 with open('../cleaned_quiltdata/items.json', 'r+') as qf:
-    with open('../cleaned_quiltdata/bar-obit-items.json', 'r+') as of:
+    with open('../intermediate_data/bar-obit-items.json', 'r+') as of:
         obit_items = json.load(of)
         quilt_items = json.load(qf)
         millis_start = int(round(time.time() * 1000))

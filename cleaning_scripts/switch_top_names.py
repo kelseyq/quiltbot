@@ -23,8 +23,8 @@ with open('../cleaned_quiltdata/top-obit-items.json', 'r') as f:
                 obit['title_name'] = " ".join(names)
         new_obits.append(obit)
 
-    copyfile('../cleaned_quiltdata/top-obit-items.json', '../cleaned_quiltdata/older_data/before_top_switch' +
+    copyfile('../intermediate_data/top-obit-items.json', '../cleaned_quiltdata/older_data/before_top_switch' +
          str(datetime.datetime.now()).split('.')[0] + ".json")
-    with open('../cleaned_quiltdata/top-obit-items2.json', 'w') as f2:
+    with open('../intermediate_data/top-obit-items2.json', 'w') as f2:
         json.dump(obits, f2, indent=2, sort_keys=True)
-        rename('../cleaned_quiltdata/top-obit-items2.json', '../cleaned_quiltdata/top-obit-items.json')
+        rename('../intermediate_data/top-obit-items2.json', '../intermediate_data/top-obit-items.json')
