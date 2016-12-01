@@ -5,6 +5,7 @@ import random
 import json
 import sys
 import time
+import os
 
 APP_KEY = ''
 APP_SECRET = ''
@@ -47,15 +48,13 @@ def main():
         if len(sys.argv) > 1:
             block_numbers = [number.zfill(5) for number in sys.argv[1:]]
         else:
-            std_in = sys.stdin.readline().split()
-            if len(std_in) > 1:
-                block_numbers = [number.zfill(5) for number in std_in]
-            else:
-                block_numbers = ['%05d' % random.randint(1, len(items))]
+            blocks_left = len(os.listdir(PICTURE_DIR))
+            block_numbers = [os.listdir(PICTURE_DIR)[random.randrange(0, blocks_left)].split('.')[0]]
 
         for block_number in block_numbers:
             block_data = next((item for item in items if item['block_number'] == block_number))
-            block_image = open(PICTURE_DIR + block_number + '.jpg', 'rb')
+            block_path = PICTURE_DIR + block_number + '.jpg'
+            block_image = open(block_path, 'rb')
             names = block_data['names']
 
             print("tweeting block", block_number)
@@ -63,6 +62,9 @@ def main():
             last_tweet = twitter.update_status(status="", media_ids=[response['media_id']])
 
             split_names(names, twitter, last_tweet)
+            print("deleting block", block_number)
+            os.remove(block_path)
+
 
 if __name__ == "__main__":
     main()
