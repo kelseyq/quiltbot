@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from twython import Twython
+from mastodon import Mastodon
 import random
 import json
 import sys
@@ -11,10 +12,14 @@ APP_KEY = ''
 APP_SECRET = ''
 TOKEN = ""
 TOKEN_SECRET = ""
+MAST_CLIENT_ID = ''
+MAST_CLIENT_SECRET = ''
+MAST_ACCESS_TOKEN = ''
+MAST_API_BASE = 'https://botsin.space'
 PICTURE_DIR = "../cleaned_quiltdata/quilt_images2/working/"
 
 
-def split_names(names, twitter=None, last_tweet=None):
+def split_names(names, twitter=None, last_tweet=None, mastcl=None, last_toot=None):
     while len(names) > 0:
         next_tweet = ""
 
@@ -25,6 +30,8 @@ def split_names(names, twitter=None, last_tweet=None):
             if twitter is not None:
                 time.sleep(5)
                 twitter.update_status(status=status, in_reply_to_status_id=last_tweet['id_str'])
+                if mastcl is not None:
+                    mastcl.status_post(status=status, in_reply_to_id=last_toot['id']
 
         while len(next_tweet) < 140:
             if len(names) == 0 \
@@ -39,11 +46,14 @@ def split_names(names, twitter=None, last_tweet=None):
         if twitter is not None and len(next_tweet) > 0:
             time.sleep(5)
             twitter.update_status(status=next_tweet, in_reply_to_status_id=last_tweet['id_str'])
+            if mastcl is not None:
+                mastcl.status_post(status=next_tweet, in_reply_to_id=last_toot['id']
 
 def main():
     with open('../cleaned_quiltdata/items.json', 'r') as f:
         items = json.load(f)
         twitter = Twython(APP_KEY, APP_SECRET, TOKEN, TOKEN_SECRET)
+        mastcl = Mastodon(MAST_CLIENT_ID, MAST_CLIENT_SECRET, MAST_ACCESS_TOKEN, MAST_API_BASE)
 
         if len(sys.argv) > 1:
             block_numbers = [number.zfill(5) for number in sys.argv[1:]]
@@ -61,7 +71,11 @@ def main():
             response = twitter.upload_media(media=block_image)
             last_tweet = twitter.update_status(status="", media_ids=[response['media_id']])
 
-            split_names(names, twitter, last_tweet)
+            print("tooting block", block_number)
+            mast_response = mastcl.media_post(block_image)
+            last_toot = mastcl.status_post(status="", media_ids=[mast_respone['media_id']])
+
+            split_names(names, twitter, last_tweet, mastcl, last_toot)
             print("deleting block", block_number)
             os.remove(block_path)
 
